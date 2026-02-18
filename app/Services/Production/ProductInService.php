@@ -1,0 +1,202 @@
+<?php
+
+namespace App\Services\Production;
+
+use App\Models\ProductIn;
+use App\Models\Shift;
+use Carbon\Carbon;
+use Illuminate\Support\Facades\Log;
+
+class ProductInService
+{
+    public function sync(): void {
+
+        $today    = now();
+        $now      = $today->format('H:i:s');
+        $lastData = ProductIn::latest()->first();
+
+        if ($lastData === null) {
+
+            $shiftId  = $this->getShiftId($now);
+            $filePath = $this->setFilePath($today, $now, $shiftId);
+
+            $this->processFile($today, $filePath);
+            return;
+        }
+
+        $lastDate = Carbon::parse($lastData->time_in)->toDateString();
+        $nowDate  = $today->toDateString();
+
+        if ($lastDate !== $nowDate) {
+            $this->calibrate($lastData, $lastDate, $nowDate);
+            return;
+        }
+
+        $shiftId  = $this->getShiftId($now);
+        $filePath = $this->setFilePath($today, $now, $shiftId);
+
+        try {
+
+            $data = file($filePath, FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
+
+        } catch (\Throwable $e) {
+
+            Log::error($e->getMessage());
+            return;
+        }
+
+        $lastIndex = collect($data)->search(
+            fn ($line) => str_contains($line, $lastData->part_id)
+        );
+
+        if ($lastIndex === false || $lastIndex === array_key_last($data)) {
+            return;
+        }
+
+        $this->processFile($today, $filePath, $lastIndex + 1);
+    }
+
+    private function setFilePath($today, string $now, int $shiftId): ?string {
+
+        if ($shiftId === 1) {
+
+            return $this->getFilePath($today, 'DAY');
+        }
+        if ($shiftId === 2) {
+
+            if ($now >= '20:00:00') {
+                return $this->getFilePath($today, 'NIGHT');
+            }
+
+            if ($now < '07:30:00') {
+                return $this->getFilePath($today->copy()->subDay(), 'NIGHT');
+            }
+        }
+        return null;
+    }
+
+    private function getFilePath($date, string $shift): string
+    {
+        return '\\\\FU551324001\\Users\\ADMIN\\Documents\\Pokayoke\\DATA\\'
+                . $date->year . '\\'
+                . $date->month . '\\'
+                . $date->format('d') . '\\'
+                . $shift . '\\PRODUCTION DATA\\Data Scan.txt';
+    }
+    
+    private function processFile($currentDate, string $filePath, int $startIndex = 0): void {
+
+        if (!file_exists($filePath)) {
+            return;
+        }
+
+        $data = file($filePath, FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
+
+        for ($i = $startIndex; $i < count($data); $i++) {
+
+            $parsed = $this->parseLine($data[$i]);
+
+            if ($parsed && $parsed['judgement'] === 'OK') {
+                $this->save($currentDate, $parsed);
+            }
+        }
+    }
+
+    private function parseLine(string $line): ?array
+    {
+        $cols = preg_split('/[\t\s]+/', trim($line));
+
+        if (!isset($cols[3])) {
+            return null;
+        }
+
+        if (strlen($cols[3]) < 15) {
+
+            return [
+                'timeIn'     => $cols[0]  ?? null,
+                'partNumber' => $cols[3]  ?? null,
+                'partId'     => $cols[10] ?? null,
+                'judgement'  => $cols[12] ?? null,
+            ];
+        }
+
+        return [
+            'timeIn'     => $cols[0]  ?? null,
+            'partNumber' => substr($cols[3], 0, 13),
+            'partId'     => $cols[9]  ?? null,
+            'judgement'  => $cols[11] ?? null,
+        ];
+    }
+
+    private function save($currentDate, array $parsed, int $quantity = 2): void {
+
+        if (empty($parsed['partId']) || empty($parsed['partNumber']) || empty($parsed['timeIn'])) {
+            return;
+        }
+
+        $baseDate = $currentDate->copy();
+        $timeOnly = Carbon::createFromFormat('H:i:s', $parsed['timeIn']);
+
+        if ($timeOnly->lt(Carbon::createFromTime(7, 30))) {
+            $baseDate->addDay();
+        }
+
+        $dateTimeIn = $baseDate->format('Y-m-d') . ' ' . $parsed['timeIn'];
+
+        ProductIn::firstOrCreate(
+            [
+                'part_id'     => $parsed['partId'],
+                'part_number' => $parsed['partNumber'],
+                'time_in'     => $dateTimeIn,
+            ],
+            [
+                'quantity' => $quantity,
+            ]
+        );
+    }
+    
+    private function calibrate($lastData, string $lastDate, string $nowDate): void {
+
+        $currentDate = Carbon::parse($lastDate)->startOfDay();
+        $endDate     = Carbon::parse($nowDate)->startOfDay();
+        $shifts      = ['DAY', 'NIGHT'];
+
+        while ($currentDate->lte($endDate)) {
+
+            foreach ($shifts as $shift) {
+
+                $filePath = $this->getFilePath($currentDate, $shift);
+
+                if (!file_exists($filePath)) {
+                    continue;
+                }
+
+                $startIndex = 0;
+
+                if ($currentDate->toDateString() === $lastDate) {
+
+                    $data = file($filePath, FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
+
+                    $foundIndex = collect($data)->search(
+                        fn ($line) => str_contains($line, $lastData->part_id)
+                    );
+
+                    $startIndex = ($foundIndex !== false) ? $foundIndex + 1 : 0;
+                }
+
+                $this->processFile($currentDate, $filePath, $startIndex);
+            }
+
+            $currentDate->addDay();
+        }
+    }
+
+    private function getShiftId(string $time): ?int {
+
+        return Shift::where(function ($q) use ($time) {
+
+            $q->where('time_start', '<=', $time)->where('time_end', '>', $time);
+            
+        })->value('id');
+    }
+}
