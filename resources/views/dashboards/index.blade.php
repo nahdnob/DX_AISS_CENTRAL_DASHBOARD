@@ -1,12 +1,13 @@
 @extends('layouts.app')
 
+@section('header')
+	<span class="bg-clip-text text-transparent bg-gradient-to-r from-sky-200 to-red-700 italic">
+		AISS
+	</span>
+	<span class="font-semibold">{{ $title }}</span>
+@endsection
+
 @section('content')
-	@php
-		$pageTitle = '
-			<span class="bg-clip-text text-transparent bg-gradient-to-r from-sky-200 to-red-700 italic">AISS </span>
-			<span class="font-semibold">'.$title.'</span>
-		';
-	@endphp
 	<div class="mx-auto max-w-7xl px-4 py-4">
 		<div class="w-full flex flex-col gap-4 sm:flex-row">
 			<div class="w-[500px] flex flex-col gap-3">

@@ -7,15 +7,15 @@
 				</div>
 				<div class="hidden md:block">
 					<div class="ml-10 flex items-baseline space-x-4">
-					<!-- <x-nav-link href="/" :active="request()->is('/')">Monitoring</x-nav-link> -->
-					<!-- <x-nav-link href="/schedule" :active="request()->is('schedule')">Monitoring</x-nav-link> -->
+					<!-- <x-ui.nav-link href="/" :active="request()->is('/')">Monitoring</x-ui.nav-link> -->
+					<!-- <x-ui.nav-link href="/schedule" :active="request()->is('schedule')">Monitoring</x-ui.nav-link> -->
 					</div>
 				</div>
 			</div>
 			<div class="hidden md:block">
 				<div class="ml-4 flex items-center md:ml-6">
 					<!-- Clock -->
-					<div class="text-center text-white px-4 flex flex-col">
+					<div class="text-right text-white px-4 flex flex-col">
 						<p id="current-time" class="text-3xl font-mono tracking-wide">00:00:00</p>
 						<p id="current-date" class="text-base font-mono tracking-wide">dd/mm/yyyy</p>
 					</div>
@@ -40,7 +40,7 @@
 							
 							<!-- Active: "bg-gray-100", Not Active: "" -->
 							<a href="#" class="block px-4 py-2 text-sm text-gray-700" role="menuitem" tabindex="-1" id="user-menu-item-0">Your Profile</a>
-							<a href="#" class="block px-4 py-2 text-sm text-gray-700" role="menuitem" tabindex="-1" id="user-menu-item-1">Settings</a>
+							<a href="{{ route('settings.index') }}" class="block px-4 py-2 text-sm text-gray-700" role="menuitem" tabindex="-1" id="user-menu-item-1">Settings</a>
 							<a href="#" class="block px-4 py-2 text-sm text-gray-700" role="menuitem" tabindex="-1" id="user-menu-item-2">Sign out</a>
 						</div>
 					</div>
