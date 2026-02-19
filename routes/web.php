@@ -4,6 +4,7 @@ use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\LinePerformanceController;
 use App\Http\Controllers\MarqueeTextController;
 use App\Http\Controllers\SettingController;
+use App\Http\Controllers\PatternHistoryController;
 
 use Illuminate\Support\Facades\Route;
  
@@ -28,3 +29,6 @@ Route::get('/fetch-products-table', [DashboardController::class, 'fetchProductsT
 
 // Route - Marquee Text
 Route::post('/marqueeText/update', [MarqueeTextController::class, 'update'])->name('marqueeText.update');
+
+// Pattern Histories
+Route::resource('/pattern-histories', PatternHistoryController::class);

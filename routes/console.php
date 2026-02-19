@@ -10,23 +10,26 @@ Artisan::command('inspire', function () {
     $this->comment(Inspiring::quote());
 })->purpose('Display an inspiring quote')->hourly();
 
-// Dashboard Schedule Commands
+// 1. Product In Sync
 Schedule::command('sync:product-in')
         ->everyMinute()
         ->withoutOverlapping()
         ->runInBackground();
 
+// 2. Product Out Sync`
 Schedule::command('sync:product-out')
         ->everyMinute()
         ->withoutOverlapping()
         ->runInBackground();
 
+// 3. Completing Data Sync
 Schedule::command('sensor:complete-data')
         ->everyMinute()
         ->withoutOverlapping()
         ->onOneServer()
         ->runInBackground();
 
+// 4. Summary Data Sync
 Schedule::command('sensor:summary-data')
         ->everyMinute()
         ->withoutOverlapping()
