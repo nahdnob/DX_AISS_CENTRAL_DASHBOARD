@@ -24,6 +24,7 @@ class DatabaseSeeder extends Seeder
             PatternSensorSeeder::class,
             PatternHistorySeeder::class,
             MarqueeTextSeeder::class,
+            UserSeeder::class,
         ]);
     }
 }

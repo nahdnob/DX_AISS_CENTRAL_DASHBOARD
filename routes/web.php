@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\AuthController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\LinePerformanceController;
 use App\Http\Controllers\MarqueeTextController;
@@ -9,6 +10,10 @@ use App\Http\Controllers\PatternHistoryController;
 use Illuminate\Support\Facades\Route;
  
 Route::get('/', fn () => redirect()->route('dashboards.index'));
+
+Route::post('/register', [AuthController::class, 'register'])->name('register');
+Route::post('/login', [AuthController::class, 'login'])->name('login');
+Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 
 // Route - dashboard
 Route::resource('dashboards', DashboardController::class);

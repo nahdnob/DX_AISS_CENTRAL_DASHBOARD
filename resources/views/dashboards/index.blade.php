@@ -28,7 +28,7 @@
 			{{-- Still working on this part... --}}
 			<div class="w-full">
 				<div class="h-[515px] bg-white shadow-lg rounded-lg overflow-hidden">
-					<div id="default-carousel" class="relative w-full h-full" data-carousel="slide" data-carousel-interval="15000">
+					<div id="default-carousel" class="relative w-full h-full" data-carousel="static">
 						<!-- Carousel wrapper -->
 						<div class="relative h-full overflow-hidden">
 							<!-- Item 1 : TABLE -->
@@ -123,12 +123,56 @@
 				</div>
 			</div>
 		</div>
+		<x-ui.modal id="login-modal">
+			<x-auth.login-form />
+		</x-ui.modal>
 	</div>
 	<script src="https://cdn.jsdelivr.net/npm/@tailwindplus/elements@1" type="module"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-annotation@1.4.0/dist/chartjs-plugin-annotation.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2.2.0/dist/chartjs-plugin-datalabels.min.js"></script>
+	<script src="https://unpkg.com/flowbite@latest/dist/flowbite.min.js"></script>
+	<script>
+		document.addEventListener("DOMContentLoaded", function () {
 
+			const toggle = document.getElementById("ct-view-toggle");
+			const carouselEl = document.getElementById("default-carousel");
+
+			if (!carouselEl) return;
+
+			let autoSlide = null;
+
+			function startAutoSlide() {
+				if (autoSlide) return;
+
+				autoSlide = setInterval(() => {
+					const nextBtn = carouselEl.querySelector('[data-carousel-next]');
+					nextBtn?.click();
+				}, 15000);
+
+				console.log("AUTO SLIDE START");
+			}
+
+			function stopAutoSlide() {
+				clearInterval(autoSlide);
+				autoSlide = null;
+				console.log("AUTO SLIDE STOP");
+			}
+
+			// Default: OFF (tidak jalan)
+			stopAutoSlide();
+
+			if (toggle) {
+				toggle.addEventListener("change", function () {
+					if (this.checked) {
+						startAutoSlide();
+					} else {
+						stopAutoSlide();
+					}
+				});
+			}
+		});
+	</script>
 	<script> // Main Chart
 
         let chart_main    = null;
