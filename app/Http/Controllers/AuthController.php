@@ -40,7 +40,8 @@ class AuthController extends Controller
 
         Auth::login($user);
 
-        return back();
+        return redirect()->route('dashboards.index')
+            ->with('success', 'Registrasi berhasil, selamat datang!');
     }
 
     public function login(Request $request) {
@@ -51,13 +52,16 @@ class AuthController extends Controller
         ]);
 
         if (Auth::attempt($credentials)) {
+
             $request->session()->regenerate();
-            return back();
+
+            return redirect()->route('dashboards.index')
+                ->with('success', 'Login berhasil!');
         }
 
-        return back()->withErrors([
-            'npk' => 'NPK atau password salah'
-        ]);
+        return back()
+            ->with('error', 'NPK atau password salah')
+            ->withInput();
     }
 
     public function logout(Request $request) {
@@ -67,6 +71,7 @@ class AuthController extends Controller
         $request->session()->invalidate();
         $request->session()->regenerateToken();
 
-        return redirect('/');
+        return redirect()->route('dashboards.index')
+            ->with('success', 'Logout berhasil!');
     }
 }

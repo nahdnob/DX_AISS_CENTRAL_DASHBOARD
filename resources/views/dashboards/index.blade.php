@@ -1,10 +1,10 @@
 @extends('layouts.app')
 
 @section('header')
-	<span class="bg-clip-text text-transparent bg-gradient-to-r from-sky-200 to-red-700 italic">
-		AISS
-	</span>
-	<span class="font-semibold">{{ $title }}</span>
+	<h1 class="text-4xl font-bold tracking-tight text-gray-900 text-center">
+		<span class="bg-clip-text text-transparent bg-gradient-to-r from-sky-200 to-red-700 italic">AISS</span>
+		<span class="font-semibold">{{ $title }}</span>
+	</h1>
 @endsection
 
 @section('content')
@@ -71,29 +71,29 @@
 								</div>
 							</div>
 						</div>
-						<!-- Indicators -->
-						<div class="absolute z-30 flex -translate-x-1/2 bottom-3 left-1/2 space-x-3">
-							<button data-carousel-slide-to="0" class="w-3 h-3 rounded-full bg-gray-300"></button>
-							<button data-carousel-slide-to="1" class="w-3 h-3 rounded-full bg-gray-300"></button>
-						</div>
-						<!-- Prev -->
-						<button data-carousel-prev
-							class="absolute top-0 left-0 z-30 flex items-center justify-center h-full px-4">
-							<span class="text-gray-500 text-2xl">‹</span>
-						</button>
-						<!-- Next -->
-						<button data-carousel-next
-							class="absolute top-0 right-0 z-30 flex items-center justify-center h-full px-4">
-							<span class="text-gray-500 text-2xl">›</span>
-						</button>
-
+						@auth
+							<!-- Indicators -->
+							<div class="absolute z-30 flex -translate-x-1/2 bottom-3 left-1/2 space-x-3">
+								<button data-carousel-slide-to="0" class="w-3 h-3 rounded-full bg-gray-300"></button>
+								<button data-carousel-slide-to="1" class="w-3 h-3 rounded-full bg-gray-300"></button>
+							</div>
+							<!-- Prev -->
+							<button data-carousel-prev class="group absolute top-0 left-0 z-30 flex items-center justify-center h-full px-4">
+								<svg class="w-6 h-6 text-gray-300 group-hover:text-gray-800 dark:text-white transition-colors duration-200" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
+									<path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m15 19-7-7 7-7"/>
+								</svg>
+							</button>
+							<!-- Next -->
+							<button data-carousel-next class="group absolute top-0 right-0 z-30 flex items-center justify-center h-full px-4">
+								<svg class="w-6 h-6 text-gray-300 group-hover:text-gray-800 dark:text-white transition-colors duration-200" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
+									<path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m9 5 7 7-7 7"/>
+								</svg>
+							</button>
+						@endauth
 					</div>
-
 				</div>
 			</div>
-
 		</div>
-
 		<footer class="relative">
 			<div class="container mx-auto px-4 pt-1">
 				<div class="flex flex-wrap items-center md:justify-between justify-center">
@@ -123,7 +123,18 @@
 				</div>
 			</div>
 		</div>
-		<x-ui.modal id="login-modal">
+		@auth
+			<x-ui.modal id="profile-modal" maxWidth="max-w-md">
+				<x-ui.profile-card
+					:name="Auth::user()->name"
+					:email="Auth::user()->email"
+					:verified="Auth::user()->email_verified_at !== null"
+					:npk="Auth::user()->npk"
+					:image="Auth::user()->image ? asset('storage/' . Auth::user()->image) : asset('assets/images/profile-blank.jpg')"
+				/>
+			</x-ui.modal>
+		@endauth
+		<x-ui.modal id="login-modal" maxWidth="max-w-lg">
 			<x-auth.login-form />
 		</x-ui.modal>
 	</div>

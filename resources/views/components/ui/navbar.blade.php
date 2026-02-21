@@ -15,6 +15,7 @@
 			<div class="hidden md:block">
 				<div class="flex flex-row">
 					@auth
+						{{-- CT View Toggle --}}
 						<label class="inline-flex items-center me-5 cursor-pointer">
 							<input type="checkbox" id="ct-view-toggle" value="" class="sr-only peer">
 							<div class="relative w-11 h-6 bg-neutral-500 rounded-full peer dark:bg-gray-700 peer-focus:ring-4 peer-focus:ring-green-300 dark:peer-focus:ring-green-800 peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-0.5 after:start-[2px] after:bg-white after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-green-500 dark:peer-checked:bg-green-600"></div>
@@ -34,8 +35,7 @@
 									<span class="absolute -inset-1.5"></span>
 									<span class="sr-only">Open user menu</span>
 									@auth
-										<img 
-											class="h-14 w-14 rounded-full"
+										<img class="h-14 w-14 rounded-full"
 											src="{{ Auth::user()->image 
 												? asset('storage/' . Auth::user()->image) 
 												: asset('assets/images/profile-blank.jpg')
@@ -43,12 +43,13 @@
 											alt="{{ Auth::user()->name }}"
 										>
 									@else
-										<img class="h-14 w-14 rounded-full" src="{{asset('assets/images/profile-blank.jpg')}}" alt="Guest">
+										<img class="h-14 w-14 rounded-full"
+											src="{{asset('assets/images/profile-blank.jpg')}}"
+											alt="Guest">
 									@endauth
 								</button>
 							</div>
-							<div
-								x-show="isOpen"
+							<div x-show="isOpen"
 								x-transition:enter="transition ease-out duration-100 transform"
 								x-transition:enter-start="opacity-0 scale-95"
 								x-transition:enter-end="opacity-100 scale-100"
@@ -58,7 +59,16 @@
 								class="absolute right-0 z-10 mt-2 w-48 origin-top-right rounded-md bg-white py-1 shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none" role="menu" aria-orientation="vertical" aria-labelledby="user-menu-button" tabindex="-1">
 								
 								<!-- Active: "bg-gray-100", Not Active: "" -->
-								<a href="#" class="block px-4 py-2 text-sm text-gray-700" role="menuitem" tabindex="-1" id="user-menu-item-0">Your Profile</a>
+								<a
+									href="javascript:void(0)"
+									data-modal-open="profile-modal"
+									class="block px-4 py-2 text-sm text-gray-700"
+									role="menuitem"
+									tabindex="-1"
+									id="user-menu-item-0"
+								>
+									Your Profile
+								</a>
 								<a href="{{ route('settings.index') }}" class="block px-4 py-2 text-sm text-gray-700" role="menuitem" tabindex="-1" id="user-menu-item-1">Settings</a>
 								@auth
 									<hr>
@@ -71,15 +81,15 @@
 									<form method="POST" action="{{ route('logout') }}">
 										@csrf
 										<button type="submit"
-											class="w-full text-left block px-4 py-2 text-sm text-red-600 hover:bg-gray-100">
+											class="w-full text-left block px-4 py-2 text-sm text-red-600 hover:bg-gray-100"
+										>
 											Sign Out
 										</button>
 									</form>
 								@else
-									{{-- BELUM LOGIN --}}
 									<a
 										href="javascript:void(0)"
-										onclick="openModal('login-modal')"
+										data-modal-open="login-modal"
 										class="block px-4 py-2 text-sm text-gray-700"
 										role="menuitem"
 										tabindex="-1"

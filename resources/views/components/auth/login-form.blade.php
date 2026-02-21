@@ -1,4 +1,4 @@
-<form method="POST" action="{{ route('login') }}" class="p-4 space-y-4">
+<form method="POST" action="{{ route('login') }}" class="w-[90vw] max-w-md bg-white rounded-xl shadow-xl p-6 space-y-4">
     @csrf
 
     <h1 class="text-xl font-bold text-gray-900 md:text-2xl dark:text-white">
