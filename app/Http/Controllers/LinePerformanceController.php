@@ -11,29 +11,12 @@ use Illuminate\Http\RedirectResponse;
 class LinePerformanceController extends Controller
 {
 	public static function index() {
-		
-		$currentYear = now()->year;
-			$lastYear 	 = $currentYear - 1;
-		$months = [
-				'December', 'January', 'February', 'March', 'April', 
-				'May', 'June', 'July', 'August', 'September', 'October', 'November'
-		];
+										
+		$linePerformances = LinePerformance::orderBy('year', 'desc')
+										   ->orderByRaw("FIELD(month,'January','February','March','April','May','June', 'July','August','September','October','November','December') DESC")
+										   ->paginate(6);
 
-		$linePerformance = LinePerformance::where(function($query) use ($currentYear, $lastYear) {
-									$query->where('year', $lastYear)
-										->where('month', 'December')
-										->orWhere(function($q) use ($currentYear) {
-																					$q->where('year', $currentYear)
-																						->whereIn('month', [
-																							'January', 'February', 'March', 'April',
-																							'May', 'June', 'July', 'August',
-																							'September', 'October', 'November'
-																						]);
-										});
-								})
-								->orderByRaw("FIELD(month, '" . implode("','", $months) . "') asc")
-								->get();
-		return $linePerformance;
+		return view('line-performances.index', compact('linePerformances'));
 	}
 
 	public function search(Request $request)
@@ -94,7 +77,7 @@ class LinePerformanceController extends Controller
 		]);
 
 		//redirect to dashboard
-		return redirect()->route('dashboards.index')->with(['success' => 'Data Berhasil Disimpan!']);
+		return redirect()->route('line-performance.index')->with(['success' => 'Data Berhasil Disimpan!']);
 	}
 
 	public function edit(string $id)

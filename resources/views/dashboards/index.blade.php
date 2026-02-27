@@ -21,7 +21,8 @@
 				<!-- Modal Line Performance - Edit -->
 				<div class="mt-4 w-full flex flex-col">
 					<x-dashboard.line-performance
-						:items="$linePerformances" />
+						:items="$linePerformances"
+					/>
 				</div>
 			</div>
 
@@ -412,7 +413,7 @@
 
 			reset() {
 				this.form.reset();
-				this.form.action = "{{ route('linePerformance.store') }}";
+				this.form.action = "{{ route('line-performance.store') }}";
 
 				document.getElementById('lp-method')?.remove();
 				this.inputId.value = '';
