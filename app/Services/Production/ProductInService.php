@@ -4,11 +4,17 @@ namespace App\Services\Production;
 
 use App\Models\ProductIn;
 use App\Models\Shift;
+use App\Services\Production\SummaryService;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Log;
 
 class ProductInService
 {
+
+    public function __construct(
+        protected SummaryService $summaryService
+    ) {}
+
     public function sync(): void {
 
         $today    = now();
@@ -84,7 +90,7 @@ class ProductInService
                 . $shift . '\\PRODUCTION DATA\\Data Scan.txt';
     }
     
-    private function processFile($currentDate, string $filePath, int $startIndex = 0): void {
+    private function processFile($currentDate, string $filePath, int $startIndex = 0): void{
 
         if (!file_exists($filePath)) {
             return;
@@ -92,13 +98,25 @@ class ProductInService
 
         $data = file($filePath, FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
 
+        $updatedParts = [];
+
         for ($i = $startIndex; $i < count($data); $i++) {
 
             $parsed = $this->parseLine($data[$i]);
 
             if ($parsed && $parsed['judgement'] === 'OK') {
-                $this->save($currentDate, $parsed);
+
+                $product = $this->save($currentDate, $parsed);
+
+                if ($product) {
+                    $updatedParts[] = $product->part_number;
+                }
             }
+        }
+
+        // update summary hanya sekali per part_number
+        foreach (array_unique($updatedParts) as $partNumber) {
+            $this->summaryService->updateSummary($partNumber);
         }
     }
 
@@ -128,10 +146,10 @@ class ProductInService
         ];
     }
 
-    private function save($currentDate, array $parsed, int $quantity = 2): void {
+    private function save($currentDate, array $parsed, int $quantity = 2): ?ProductIn {
 
         if (empty($parsed['partId']) || empty($parsed['partNumber']) || empty($parsed['timeIn'])) {
-            return;
+            return null;
         }
 
         $baseDate = $currentDate->copy();
@@ -143,7 +161,7 @@ class ProductInService
 
         $dateTimeIn = $baseDate->format('Y-m-d') . ' ' . $parsed['timeIn'];
 
-        ProductIn::firstOrCreate(
+        return ProductIn::firstOrCreate(
             [
                 'part_id'     => $parsed['partId'],
                 'part_number' => $parsed['partNumber'],

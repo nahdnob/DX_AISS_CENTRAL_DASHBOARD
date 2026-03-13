@@ -11,13 +11,13 @@ Artisan::command('inspire', function () {
 })->purpose('Display an inspiring quote')->hourly();
 
 // 1. Product In Sync
-Schedule::command('sync:product-in')
+Schedule::command('app:sync-product-in')
         ->everyMinute()
         ->withoutOverlapping()
         ->runInBackground();
 
 // 2. Product Out Sync`
-Schedule::command('sync:product-out')
+Schedule::command('app:sync-product-out')
         ->everyMinute()
         ->withoutOverlapping()
         ->runInBackground();

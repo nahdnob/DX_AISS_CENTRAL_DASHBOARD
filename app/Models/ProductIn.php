@@ -20,6 +20,6 @@ class ProductIn extends Model
 
     public function productOut()
     {
-        return $this->belongsTo(ProductOut::class);
-    }
+        return $this->belongsTo(ProductOut::class, 'product_out_id', 'id');
+    } 
 }

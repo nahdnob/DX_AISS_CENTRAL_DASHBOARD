@@ -106,24 +106,14 @@
 					</div>
 				</div>
 			</div>
-		</footer>
-		<div class="fixed bottom-0 left-0 right-0 h-10 pt-1 bg-[#fff333] text-white text-3xl w-full">
-			<div id="animate-marquee" contenteditable="true" class="text-red-500 whitespace-nowrap animate-marquee">
-				{{ $marqueeText->text ?? 'Klik di sini untuk mengedit teks berjalan ini.' }}
-			</div>
-		</div>
-		<div id="myCardClaim" class="modal hidden fixed inset-0 flex items-center justify-center z-50">
-			<div class="modal-overlay absolute inset-0 bg-black opacity-50"></div>
-			<div class="modal-container bg-white w-11/12 md:max-w-md mx-auto rounded shadow-lg z-50 overflow-y-auto">
-				<div class="modal-content py-4 text-left px-6">
-				<div class="flex justify-between items-center pb-3">
-					<div></div>
-					<button id="closeCardClaim" class="modal-close px-3 py-1 rounded-full bg-gray-200 hover:bg-gray-300 focus:outline-none focus:ring">✕</button>
-				</div>
-					{{-- @include('components.card-profile.index') --}}
-				</div>
-			</div>
-		</div>
+		</footer> 
+		<marquee
+			behavior="scroll"
+			direction="left"
+			scrollamount="15"
+			class="fixed bottom-0 left-0 p-1 bg-[#fff333] text-2xl text-red-500">
+			{{ $marqueeText->text }}
+		</marquee>
 		@auth
 			<x-ui.modal id="profile-modal" maxWidth="max-w-md">
 				<x-ui.profile-card

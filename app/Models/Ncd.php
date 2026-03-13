@@ -13,5 +13,5 @@ class Ncd extends Model
      *
      * @var array
      */
-    protected $fillable = ['tanggal','claim','action',];
+    protected $fillable = ['date','claim','action',];
 }

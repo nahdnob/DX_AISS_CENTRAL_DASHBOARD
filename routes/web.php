@@ -1,11 +1,13 @@
 <?php
 
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\BestRecordController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\LinePerformanceController;
 use App\Http\Controllers\MarqueeTextController;
 use App\Http\Controllers\SettingController;
 use App\Http\Controllers\PatternHistoryController;
+use App\Http\Controllers\ProductController;
 use App\Http\Controllers\SystemManagerController;
 
 use Illuminate\Support\Facades\Route;
@@ -29,6 +31,10 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/settings', [SettingController::class, 'index'])->name('settings.index');
 
 });
+
+Route::resource('products', ProductController::class);
+
+Route::resource('best-records', BestRecordController::class);
 
 // Route - Line Performance
 Route::resource('/line-performance', LinePerformanceController::class);

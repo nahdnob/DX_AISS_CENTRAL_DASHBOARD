@@ -9,6 +9,8 @@ use App\Models\WorkHour;
 
 use Carbon\Carbon;
 
+use function Symfony\Component\Clock\now;
+
 class ProductService
 {
     public function get(){

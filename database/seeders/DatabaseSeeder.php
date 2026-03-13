@@ -15,7 +15,7 @@ class DatabaseSeeder extends Seeder
         $this->call([
             ShiftSeeder::class,
             WorkHourSeeder::class,
-            ProductInSeeder::class,
+            // ProductInSeeder::class,
             // // ProductOutSeeder::class,
             BestRecordSeeder::class,
             LinePerformanceSeeder::class,

@@ -51,11 +51,6 @@ class LinePerformanceController extends Controller
 		return response()->json($query->get());
 	}
 
-	public function create(){ 	
-
-		return view('components.line-performance.create');
-	}
-
 	public function store(Request $request):RedirectResponse{
 		//validate form
 		$request->validate([
@@ -90,38 +85,37 @@ class LinePerformanceController extends Controller
 	}
 
 	public function update(Request $request, $id):RedirectResponse{
-		
 		// Validasi input
 		$request->validate([
-			'linePerformanceEditMonth'  => 'required|string',
-			'linePerformanceEditYear'   => 'required|string',
-			'linePerformanceEditTarget' => 'required|regex:/^\d+(\.\d{1,2})?$/',
-			'linePerformanceEditActual' => 'required|regex:/^\d+(\.\d{1,2})?$/',
+			'month'  => 'required|string',
+			'year'   => 'required|string',
+			'target' => 'required|regex:/^\d+(\.\d{1,2})?$/',
+			'actual' => 'required|regex:/^\d+(\.\d{1,2})?$/',
 		]);
-		
 
 		// Mengambil produk berdasarkan ID dan memperbarui datanya
 		$linep = LinePerformance::findOrFail($id);
 
-		$targetValue = str_replace(',', '.', $request->input('linePerformanceEditTarget'));
-		$actualValue = str_replace(',', '.', $request->input('linePerformanceEditActual'));
+		$targetValue = str_replace(',', '.', $request->input('target'));
+		$actualValue = str_replace(',', '.', $request->input('actual'));
 
 		$linep->update([
-			'month'  => $request->input('linePerformanceEditMonth'),
-			'year'   => $request->input('linePerformanceEditYear'),
+			'month'  => $request->input('month'),
+			'year'   => $request->input('year'),
 			'target' => $targetValue,
 			'actual' => $actualValue,
 		]);
 
 		// Redirect atau mengembalikan respon setelah update
-		return redirect()->route('products.index')->with('success', 'Data updated successfully.');
+		return redirect()->route('line-performance.index')->with(['success' => 'Data Berhasil Diupdate!']);
 	}
 
 	public function destroy($id){
 		
 		$linePerformance = LinePerformance::findOrFail($id);
-    $linePerformance->delete();
+		// dd($linePerformance);
+    	$linePerformance->delete();
 
-    return redirect()->route('dashboard.index')->with('success', 'Data berhasil dihapus.');
+    return redirect()->route('line-performance.index')->with(['success' => 'Data Berhasil Dihapus!']);
 	}
 }

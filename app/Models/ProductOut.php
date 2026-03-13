@@ -18,6 +18,6 @@ class ProductOut extends Model
 
     public function productIns()
     {
-        return $this->hasMany(ProductIn::class);
+        return $this->hasMany(ProductIn::class, 'product_out_id', 'id');
     }
 }

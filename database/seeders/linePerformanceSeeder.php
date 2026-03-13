@@ -5,7 +5,7 @@ namespace Database\Seeders;
 use App\Models\LinePerformance;
 use Illuminate\Database\Seeder;;
 
-class linePerformanceSeeder extends Seeder
+class LinePerformanceSeeder extends Seeder
 {
     /**
      * Run the database seeds.

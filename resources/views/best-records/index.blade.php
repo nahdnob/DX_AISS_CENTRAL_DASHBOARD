@@ -11,65 +11,55 @@
                             peer-placeholder-shown:top-1/2
                             peer-focus:top-2 peer-focus:scale-75 peer-focus:-translate-y-4">Input
                 </label>
-                <form action="{{ route('line-performance.store') }}" method="POST" class="flex flex-col w-full">
+                <form action="{{ route('best-records.store') }}" method="POST" class="flex flex-col w-full">
                     @csrf
                     <div class="flex flex-row mx-2 gap-10">
                         <div class="relative z-0 w-full mt-5 mb-3 group">
-                            <select id="line-performance-month" name="line-performance-month" class="block py-2.5 px-3 w-full text-sm text-gray-700 bg-transparent border border-gray-700 rounded-lg appearance-none focus:outline-none focus:ring-0 focus:border-green-600 peer">
-                                <option value="">choose</option>
-                                @foreach (['January','February','March','April','May','June','July','August','September','October','November','December'] as $m)
-                                    <option value="{{ $m }}" {{ old('month') == $m ? 'selected' : '' }}>
-                                        {{ $m }}
-                                    </option>
-                                @endforeach
-                            </select>
-                            <label for="line-performance-month"
-                                class="absolute text-sm text-gray-700 duration-300 transform -translate-y-4 scale-75 top-2 z-10 origin-[0]
-                                        bg-white px-2
-                                        peer-focus:px-2 peer-focus:text-green-600
-                                        peer-placeholder-shown:scale-100 peer-placeholder-shown:-translate-y-1/2
-                                        peer-placeholder-shown:top-1/2
-                                        peer-focus:top-2 peer-focus:scale-75 peer-focus:-translate-y-4">Month
-                            </label>
-                        </div>
-                        <div class="relative z-0 w-full mt-5 mb-3 group">
-                            <select id="line-performance-year" name="line-performance-year" class="block py-2.5 px-3 w-full text-sm text-gray-700 bg-transparent border border-gray-700 rounded-lg appearance-none focus:outline-none focus:ring-0 focus:border-green-600 peer">
-                                <option value="">choose</option>
-                                @for ($year = date('Y') - 1; $year <= date('Y') + 10; $year++)
-                                    <option value="{{ $year }}" {{ old('year') == $year ? 'selected' : '' }}>
-                                        {{ $year }}
-                                    </option>
-                                @endfor
-                            </select>
-                            <label for="line-performance-year"
-                                class="absolute text-sm text-gray-700 duration-300 transform -translate-y-4 scale-75 top-2 z-10 origin-[0]
-                                        bg-white px-2
-                                        peer-focus:px-2 peer-focus:text-green-600
-                                        peer-placeholder-shown:scale-100 peer-placeholder-shown:-translate-y-1/2
-                                        peer-placeholder-shown:top-1/2
-                                        peer-focus:top-2 peer-focus:scale-75 peer-focus:-translate-y-4">Year
-                            </label>
-                        </div>
-                        <div class="relative z-0 w-full mt-5 mb-3 group">
-                            <input type="number" name="line-performance-target" id="line-performance-target" value="{{ old('target') }}" placeholder="" class="block py-2.5 px-3 w-full text-sm text-gray-700 bg-transparent border border-gray-700 rounded-lg appearance-none focus:outline-none focus:ring-0 focus:border-green-600 peer" required step="0.1" min="0" max="100">
-                            <label for="line-performance-target"
+                            <input type="date"
+                                name="date"
+                                id="date"
+                                value="{{ old('date') }}"
+                                placeholder=""
+                                class="block py-2.5 px-3 w-full text-sm text-gray-700 bg-transparent border border-gray-700 rounded-lg appearance-none focus:outline-none focus:ring-0 focus:border-green-600 peer" required step="0.1" min="0" max="100">
+                            <label for="date"
                                 class="absolute text-sm text-gray-400 duration-300 transform -translate-y-4 scale-75 top-2 z-10 origin-[0]
                                         bg-white px-2 ml-1
                                         peer-focus:px-2 peer-focus:text-green-600
                                         peer-placeholder-shown:scale-100 peer-placeholder-shown:-translate-y-1/2
                                         peer-placeholder-shown:top-1/2
-                                        peer-focus:top-2 peer-focus:scale-75 peer-focus:-translate-y-4">Target (%)
+                                        peer-focus:top-2 peer-focus:scale-75 peer-focus:-translate-y-4">Date
                             </label>
                         </div>
                         <div class="relative z-0 w-full mt-5 mb-3 group">
-                            <input type="number" name="line-performance-actual" id="line-performance-actual" value="{{ old('actual') }}" placeholder="" class="block py-2.5 px-3 w-full text-sm text-gray-700 bg-transparent border border-gray-700 rounded-lg appearance-none focus:outline-none focus:ring-0 focus:border-green-600 peer" required step="0.1" min="0" max="100">
-                            <label for="line-performance-actual"
+                            <input type="text"
+                                name="claim"
+                                id="claim"
+                                value="{{ old('claim') }}"
+                                placeholder=""
+                                class="block py-2.5 px-3 w-full text-sm text-gray-700 bg-transparent border border-gray-700 rounded-lg appearance-none focus:outline-none focus:ring-0 focus:border-green-600 peer" required step="0.1" min="0" max="100">
+                            <label for="claim"
                                 class="absolute text-sm text-gray-400 duration-300 transform -translate-y-4 scale-75 top-2 z-10 origin-[0]
-                                    bg-white px-2 ml-1
-                                    peer-focus:px-2 peer-focus:text-green-600
-                                    peer-placeholder-shown:scale-100 peer-placeholder-shown:-translate-y-1/2
-                                    peer-placeholder-shown:top-1/2
-                                    peer-focus:top-2 peer-focus:scale-75 peer-focus:-translate-y-4">Actual (%)
+                                        bg-white px-2 ml-1
+                                        peer-focus:px-2 peer-focus:text-green-600
+                                        peer-placeholder-shown:scale-100 peer-placeholder-shown:-translate-y-1/2
+                                        peer-placeholder-shown:top-1/2
+                                        peer-focus:top-2 peer-focus:scale-75 peer-focus:-translate-y-4">Claim
+                            </label>
+                        </div>
+                        <div class="relative z-0 w-full mt-5 mb-3 group">
+                            <input type="text"
+                                name="action"
+                                id="action"
+                                value="{{ old('action') }}"
+                                placeholder=""
+                                class="block py-2.5 px-3 w-full text-sm text-gray-700 bg-transparent border border-gray-700 rounded-lg appearance-none focus:outline-none focus:ring-0 focus:border-green-600 peer" required step="0.1" min="0" max="100">
+                            <label for="action"
+                                class="absolute text-sm text-gray-400 duration-300 transform -translate-y-4 scale-75 top-2 z-10 origin-[0]
+                                        bg-white px-2 ml-1
+                                        peer-focus:px-2 peer-focus:text-green-600
+                                        peer-placeholder-shown:scale-100 peer-placeholder-shown:-translate-y-1/2
+                                        peer-placeholder-shown:top-1/2
+                                        peer-focus:top-2 peer-focus:scale-75 peer-focus:-translate-y-4">Action
                             </label>
                         </div>
                     </div>
@@ -83,13 +73,13 @@
                     <thead class="text-sm text-body text-white bg-gray-700 border-b border-default-medium">
                         <tr>
                             <th scope="col" class="px-6 py-3 font-medium">
-                                Year - Month
+                                Date
                             </th>
                             <th scope="col" class="px-6 py-3 font-medium">
-                                Target (%)
+                                Claim
                             </th>
                             <th scope="col" class="px-6 py-3 font-medium">
-                                Actual (%)
+                                Action
                             </th>
                             <th scope="col" class="px-6 py-3 font-medium">
                                 <span class="sr-only">Edit</span>
@@ -97,25 +87,25 @@
                         </tr>
                     </thead>
                     <tbody>
-                        @foreach ($linePerformances as $item)
+                        @foreach ($ncds as $item)
                             <tr class="bg-neutral-primary-soft border-b border-default hover:bg-neutral-secondary-medium">
                                 <th scope="row" class="px-6 py-4 font-medium text-heading whitespace-nowrap">
-                                    {{ $item->year }} - {{ $item->month }}
+                                    {{ \Carbon\Carbon::parse($item->date)->translatedFormat('d F Y') }}
                                 </th>
                                 <td class="px-6 py-4">
-                                    {{ number_format($item->target, 1) }}
+                                    {{ $item->claim }}
                                 </td>
-                                <td class="px-6 py-4 {{ $item->target > $item->actual ? 'text-red-600 font-medium' : 'text-green-600 font-medium' }}">
-                                    {{ number_format($item->actual, 1) }}
+                                <td class="px-6 py-4">
+                                    {{ $item->action }}
                                 </td>
                                 <td class="px-6 py-4 text-right">
                                     <a  href="javascript:void(0)"
-                                        data-modal-open="edit-line-performance-modal-{{ $item->id }}"
+                                        data-modal-open="edit-best-records-modal-{{ $item->id }}"
                                         class="px-3 py-1 text-sm font-medium text-white bg-blue-500 rounded-md hover:bg-blue-700 transition"
                                     >
                                         Edit
                                     </a>
-                                    <form action="{{ route('line-performance.destroy', $item->id) }}" method="POST" class="inline">
+                                    <form action="{{ route('best-records.destroy', $item->id) }}" method="POST" class="inline">
                                         @csrf
                                         @method('DELETE')
                                         <button type="submit"
@@ -125,15 +115,15 @@
                                         </button>
                                     </form>
                                 </td>
-                                <x-ui.modal id="edit-line-performance-modal-{{ $item->id }}" class="h-full" maxWidth="max-w-lg">
-                                    <x-forms.edit-line-performance :item="$item" />
+                                <x-ui.modal id="edit-best-records-modal-{{ $item->id }}" class="h-full" maxWidth="max-w-lg">
+                                    <x-forms.edit-best-record :item="$item" />
                                 </x-ui.modal>
                             </tr>
                         @endforeach
                     </tbody>
                 </table>
                 <div class="flex items-center justify-center m-2">
-                    <x-ui.pagination :paginator="$linePerformances" />
+                    <x-ui.pagination :paginator="$ncds" />
                 </div>
             </div>
         </div>
