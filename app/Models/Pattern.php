@@ -15,7 +15,7 @@ class Pattern extends Model
 
     // Relation to Sensors - Many to Many
     public function sensors(){
-        return $this->belongsToMany(Sensor::class, 'pattern_sensor')->withTimestamps();
+        return $this->belongsToMany(Sensor::class, 'pattern_sensor')->withPivot('pos')->withTimestamps();
     }
 
     // Relation to Sensor Summaries - has Many

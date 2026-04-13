@@ -19,6 +19,19 @@ class CycleTimeService
         $date    = production_date(now());
         $hour    = $this->context->shiftBoundary($this->context->currentShift(now()->format('H:i:s')));
         $maxY    = Pattern::where('id', $this->context->currentPattern())->value('max_time');
+        
+        // Cek apakah ada data pada hari & shift ini
+        $hasData = SensorSummary::whereBetween('created_at', [$date . ' ' . $hour['first_start'], $date . ' ' . $hour['last_end']])->exists();
+        
+        // Jika belum ada data, ambil tanggal & shift dari data terakhir yang tersedia
+        if (!$hasData) {
+            $latest = SensorSummary::latest('created_at')->first();
+            if ($latest) {
+                $latestDate = \Carbon\Carbon::parse($latest->created_at);
+                $date       = production_date($latestDate);
+                $hour       = $this->context->shiftBoundary($this->context->currentShift($latestDate->format('H:i:s')));
+            }
+        }
     
         foreach ($sensors as $sensor) {
             

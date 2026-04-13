@@ -18,15 +18,21 @@ class ProductController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
-        $products = ProductSummary::with([
+        $search = $request->input('search');
+
+        $query = ProductSummary::with([
             'firstProductIn:id,part_number,time_in',
             'lastProductIn:id,product_out_id,part_number,time_in',
             'lastProductIn.productOut:id,tag_id,part_number,time_out',
-        ])->paginate(10);
+        ]);
 
-        // dd($products);        
+        if ($search) {
+            $query->where('part_number', 'like', "%{$search}%");
+        }
+
+        $products = $query->paginate(10)->withQueryString();
 
         return view('products.index', compact('products'));
     }   

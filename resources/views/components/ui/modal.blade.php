@@ -15,17 +15,7 @@
 
     <div class="relative inline-block">
 
-        <!-- Close Button -->
-        <button data-modal-close="{{ $id }}"
-                class="absolute -top-3 -right-3 bg-red-500 rounded-full shadow p-1">
-            <svg class="w-6 h-6 text-white" fill="currentColor" viewBox="0 0 24 24">
-                <path fill-rule="evenodd"
-                    d="M6 6l12 12M6 18L18 6"
-                    stroke="currentColor"
-                    stroke-width="2"
-                    stroke-linecap="round"/>
-            </svg>
-        </button>
+
 
         {{ $slot }}
 

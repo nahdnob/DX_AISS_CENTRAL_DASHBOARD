@@ -2,7 +2,7 @@
 
 @section('header')
 	<h1 class="text-4xl font-bold tracking-tight text-gray-900 text-center">
-		<span class="bg-clip-text text-transparent bg-gradient-to-r from-sky-200 to-red-700 italic">AISS</span>
+		<span class="bg-clip-text text-transparent bg-gradient-to-r from-red-600 to-rose-900 italic">AISS</span>
 		<span class="font-semibold">{{ $title }}</span>
 	</h1>
 @endsection
@@ -26,74 +26,179 @@
 				</div>
 			</div>
 
-			{{-- Still working on this part... --}}
+			{{-- Carousel Panel --}}
 			<div class="w-full">
-				<div class="h-[515px] bg-white shadow-lg rounded-lg overflow-hidden">
-					<div id="default-carousel" class="relative w-full h-full" data-carousel="static">
-						<!-- Carousel wrapper -->
-						<div class="relative h-full overflow-hidden">
-							<!-- Item 1 : TABLE -->
-							<div class="hidden h-full duration-700 ease-in-out" data-carousel-item>
-								<div class="h-full overflow-auto p-3">
-									@include('dashboards.partials.product-table', [
-										'products' => $products
-									])
-								</div>
+				@auth
+				<div class="h-[515px] bg-white shadow-xl rounded-2xl overflow-hidden border border-gray-100 flex flex-col">
+
+					{{-- Carousel Header (hanya tampil jika login) --}}
+					<div class="flex items-center justify-between px-4 py-2.5 bg-sky-200 shrink-0">
+						{{-- Slide Tabs --}}
+						<div class="flex gap-2" id="carousel-tabs">
+							<button onclick="carouselGoTo(0)"
+								id="tab-0"
+								class="carousel-tab flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-bold transition-all duration-200 bg-sky-300/50 text-sky-900 hover:bg-sky-300/80">
+								<svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h18M3 6h18M3 14h18M3 18h18"/></svg>
+								Data Table
+							</button>
+							<button onclick="carouselGoTo(1)"
+								id="tab-1"
+								class="carousel-tab flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-bold transition-all duration-200 bg-sky-100/30 text-sky-700/70 hover:bg-sky-300/50 hover:text-sky-900">
+								<svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/></svg>
+								Cycle Time Chart
+							</button>
+						</div>
+						{{-- Controls: Dots + Prev/Next + Auto-slide toggle --}}
+						<div class="flex items-center gap-3">
+							<div class="flex items-center gap-1.5" id="carousel-dots">
+								<button onclick="carouselGoTo(0)" id="dot-0" class="carousel-dot w-2 h-2 rounded-full transition-all duration-300 bg-sky-700"></button>
+								<button onclick="carouselGoTo(1)" id="dot-1" class="carousel-dot w-2 h-2 rounded-full transition-all duration-300 bg-sky-300"></button>
 							</div>
-							<!-- Item 2 : contoh lain -->
-							<div class="hidden h-full duration-700 ease-in-out" data-carousel-item>
-								<div class="h-full  flex items-center justify-center">
-									<div class="h-full overflow-auto p-2">
-										<form id="pattern-form" method="POST" action="{{ route('pattern-histories.store') }}" class="flex gap-4 items-center">
-											@csrf
-											<select name="pattern" class="bg-white border border-gray-400 text-gray-700 font-semibold text-sm rounded-lg focus:ring-blue-400 focus:border-blue-400 block p-2.5">
-												@foreach ($patterns as $pattern)
-													<option value="{{ $pattern->id }}" {{ $patternId == $pattern->id ? 'selected' : '' }}>
-														{{ $pattern->name }}
-													</option>
-												@endforeach
-											</select>
-											<button data-popover-target="popover-applypat-right" data-popover-placement="right" type="submit" class="bg-slate-400 font-bold text-white text-md px-5 py-2.5 rounded-md hover:brightness-110 transition">APPLY</button>
-											<div data-popover id="popover-applypat-right" role="tooltip" class="absolute z-10 invisible inline-block w-64 text-sm text-gray-500 transition-opacity duration-300 bg-white border border-gray-200 rounded-lg shadow-xs opacity-0 dark:text-gray-400 dark:border-gray-600 dark:bg-gray-800">
-												<div class="px-3 py-1 bg-gray-100 border-b border-gray-200 rounded-t-lg dark:border-gray-600 dark:bg-gray-700">
-													<h3 class="font-semibold text-gray-900 dark:text-white">Apply Pattern</h3>
-												</div>
-												<div class="px-3 py-1">
-													<p>Pilih pattern yang ingin diterapkan</p>
-												</div>
-												<div data-popper-arrow></div>
-											</div>
-										</form>
-										{{-- Average Chart --}}
-										<div class="flex bg-white p-4 my-4 rounded-md h-[420px] w-[850px]">
-											<canvas id="chart_main"></canvas>
-										</div>
-									</div>
-								</div>
+							<button id="carousel-prev-btn" class="w-7 h-7 rounded-full bg-sky-300/50 hover:bg-sky-300 flex items-center justify-center transition-all duration-200 text-sky-900">
+								<svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="m15 19-7-7 7-7"/></svg>
+							</button>
+							<button id="carousel-next-btn" class="w-7 h-7 rounded-full bg-sky-300/50 hover:bg-sky-300 flex items-center justify-center transition-all duration-200 text-sky-900">
+								<svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="m9 5 7 7-7 7"/></svg>
+							</button>
+							{{-- Auto-slide Toggle --}}
+							<button id="carousel-autoslide-btn" title="Auto Slide"
+								class="w-7 h-7 rounded-full bg-sky-300/50 hover:bg-sky-300 flex items-center justify-center transition-all duration-200 text-sky-900">
+								{{-- Play icon (default) --}}
+								<svg id="icon-play" class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
+								{{-- Pause icon (hidden by default) --}}
+								<svg id="icon-pause" class="w-4 h-4 hidden" fill="currentColor" viewBox="0 0 24 24"><path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/></svg>
+							</button>
+						</div>
+					</div>
+				@else
+				{{-- Guest: no header, blue top border --}}
+				<div class="h-[515px] bg-white shadow-xl rounded-2xl overflow-hidden border-t-4 border-t-sky-200 border border-gray-100 flex flex-col">
+				@endauth
+
+					{{-- Slides Wrapper --}}
+					<div class="relative flex-1 overflow-hidden" id="carousel-slides-wrapper">
+
+						{{-- Slide 0: Data Table --}}
+						<div class="carousel-slide absolute inset-0 transition-all duration-500 ease-in-out opacity-100 translate-x-0 h-full overflow-auto p-3" data-slide="0">
+							@include('dashboards.partials.product-table', ['products' => $products])
+						</div>
+
+						{{-- Slide 1: Cycle Time Chart --}}
+						<div class="carousel-slide absolute inset-0 transition-all duration-500 ease-in-out opacity-0 translate-x-full h-full overflow-auto p-3" data-slide="1">
+							<form id="pattern-form" method="POST" action="{{ route('pattern-histories.store') }}" class="flex gap-3 items-center flex-wrap mb-3">
+								@csrf
+								<select name="pattern" class="bg-gray-50 border border-gray-300 text-gray-700 font-semibold text-sm rounded-lg focus:ring-sky-400 focus:border-sky-400 block p-2.5 transition">
+									@foreach ($patterns as $pattern)
+										<option value="{{ $pattern->id }}" {{ $patternId == $pattern->id ? 'selected' : '' }}>
+											{{ $pattern->name }}
+										</option>
+									@endforeach
+								</select>
+								<button type="submit" class="bg-gradient-to-r from-red-600 to-rose-900 text-white font-bold text-sm px-5 py-2.5 rounded-lg hover:brightness-110 transition shadow-sm shadow-red-300">APPLY</button>
+							</form>
+							<div class="bg-gray-50 rounded-xl p-3 h-[400px]">
+								<canvas id="chart_main"></canvas>
 							</div>
 						</div>
-						@auth
-							<!-- Indicators -->
-							<div class="absolute z-30 flex -translate-x-1/2 bottom-3 left-1/2 space-x-3">
-								<button data-carousel-slide-to="0" class="w-3 h-3 rounded-full bg-gray-300"></button>
-								<button data-carousel-slide-to="1" class="w-3 h-3 rounded-full bg-gray-300"></button>
-							</div>
-							<!-- Prev -->
-							<button data-carousel-prev class="group absolute top-0 left-0 z-30 flex items-center justify-center h-full px-4">
-								<svg class="w-6 h-6 text-gray-300 group-hover:text-gray-800 dark:text-white transition-colors duration-200" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
-									<path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m15 19-7-7 7-7"/>
-								</svg>
-							</button>
-							<!-- Next -->
-							<button data-carousel-next class="group absolute top-0 right-0 z-30 flex items-center justify-center h-full px-4">
-								<svg class="w-6 h-6 text-gray-300 group-hover:text-gray-800 dark:text-white transition-colors duration-200" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
-									<path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m9 5 7 7-7 7"/>
-								</svg>
-							</button>
-						@endauth
+
 					</div>
 				</div>
+				</div> {{-- end .h-[515px] --}}
 			</div>
+
+			{{-- Custom Carousel JS --}}
+			<script>
+				(function() {
+				const slides       = document.querySelectorAll('.carousel-slide');
+				const tabs         = document.querySelectorAll('.carousel-tab');
+				const dots         = document.querySelectorAll('.carousel-dot');
+				const autoBtn      = document.getElementById('carousel-autoslide-btn');
+				const iconPlay     = document.getElementById('icon-play');
+				const iconPause    = document.getElementById('icon-pause');
+				const INTERVAL     = 15000;
+				const LS_SLIDE     = 'carousel_slide';
+				const LS_AUTO      = 'carousel_auto';
+
+				// Restore from localStorage
+				let current   = parseInt(localStorage.getItem(LS_SLIDE) || '0');
+				let autoSlide = null;
+
+				window.carouselGoTo = function(index) {
+					current = index;
+					localStorage.setItem(LS_SLIDE, index);
+
+					slides.forEach((slide, i) => {
+						if (i === current) {
+							slide.classList.remove('opacity-0', 'translate-x-full', '-translate-x-full');
+							slide.classList.add('opacity-100', 'translate-x-0');
+						} else {
+							slide.classList.remove('opacity-100', 'translate-x-0');
+							slide.classList.add('opacity-0', i < current ? '-translate-x-full' : 'translate-x-full');
+						}
+					});
+
+					// Update tabs
+					tabs.forEach((tab, i) => {
+						if (i === current) {
+							tab.classList.add('bg-sky-300/50', 'text-sky-900');
+							tab.classList.remove('bg-sky-100/30', 'text-sky-700/70');
+						} else {
+							tab.classList.remove('bg-sky-300/50', 'text-sky-900');
+							tab.classList.add('bg-sky-100/30', 'text-sky-700/70');
+						}
+					});
+
+					// Update dots
+					dots.forEach((dot, i) => {
+						if (i === current) {
+							dot.classList.add('bg-sky-700', 'w-4');
+							dot.classList.remove('bg-sky-300', 'w-2');
+						} else {
+							dot.classList.remove('bg-sky-700', 'w-4');
+							dot.classList.add('bg-sky-300', 'w-2');
+						}
+					});
+				};
+
+				document.getElementById('carousel-prev-btn')?.addEventListener('click', () => {
+					carouselGoTo(current === 0 ? slides.length - 1 : current - 1);
+				});
+				document.getElementById('carousel-next-btn')?.addEventListener('click', () => {
+					carouselGoTo(current === slides.length - 1 ? 0 : current + 1);
+				});
+
+				// Auto-slide helpers
+				function startAutoSlide() {
+					if (autoSlide) return;
+					autoSlide = setInterval(() => {
+						carouselGoTo(current === slides.length - 1 ? 0 : current + 1);
+					}, INTERVAL);
+					localStorage.setItem(LS_AUTO, '1');
+					if (iconPlay)  iconPlay.classList.add('hidden');
+					if (iconPause) iconPause.classList.remove('hidden');
+					if (autoBtn)   autoBtn.classList.add('bg-sky-400/60');
+				}
+
+				function stopAutoSlide() {
+					clearInterval(autoSlide);
+					autoSlide = null;
+					localStorage.setItem(LS_AUTO, '0');
+					if (iconPlay)  iconPlay.classList.remove('hidden');
+					if (iconPause) iconPause.classList.add('hidden');
+					if (autoBtn)   autoBtn.classList.remove('bg-sky-400/60');
+				}
+
+				autoBtn?.addEventListener('click', () => {
+					autoSlide ? stopAutoSlide() : startAutoSlide();
+				});
+
+				// Init: restore state
+				carouselGoTo(current);
+				if (localStorage.getItem(LS_AUTO) === '1') {
+					startAutoSlide();
+				}
+			})();
+			</script>
 		</div>
 		<footer class="relative">
 			<div class="container mx-auto px-4 pt-1">
@@ -125,7 +230,7 @@
 				/>
 			</x-ui.modal>
 		@endauth
-		<x-ui.modal id="login-modal" maxWidth="max-w-lg">
+		<x-ui.modal id="login-modal" maxWidth="max-w-3xl">
 			<x-auth.login-form />
 		</x-ui.modal>
 	</div>
@@ -134,47 +239,7 @@
     <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-annotation@1.4.0/dist/chartjs-plugin-annotation.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2.2.0/dist/chartjs-plugin-datalabels.min.js"></script>
 	<script src="https://unpkg.com/flowbite@latest/dist/flowbite.min.js"></script>
-	<script>
-		document.addEventListener("DOMContentLoaded", function () {
 
-			const toggle = document.getElementById("ct-view-toggle");
-			const carouselEl = document.getElementById("default-carousel");
-
-			if (!carouselEl) return;
-
-			let autoSlide = null;
-
-			function startAutoSlide() {
-				if (autoSlide) return;
-
-				autoSlide = setInterval(() => {
-					const nextBtn = carouselEl.querySelector('[data-carousel-next]');
-					nextBtn?.click();
-				}, 15000);
-
-				console.log("AUTO SLIDE START");
-			}
-
-			function stopAutoSlide() {
-				clearInterval(autoSlide);
-				autoSlide = null;
-				console.log("AUTO SLIDE STOP");
-			}
-
-			// Default: OFF (tidak jalan)
-			stopAutoSlide();
-
-			if (toggle) {
-				toggle.addEventListener("change", function () {
-					if (this.checked) {
-						startAutoSlide();
-					} else {
-						stopAutoSlide();
-					}
-				});
-			}
-		});
-	</script>
 	<script> // Main Chart
 
         let chart_main    = null;
@@ -182,10 +247,11 @@
 
 		// DATA (nanti dari backend / AJAX)
 		const tactTime     = 20;
-		const dataAverage  = @json(array_map(fn($v) => round($v, 2), $cycleTimeData['average']));
-		const dataMax      = @json(array_map(fn($v) => round($v, 2), $cycleTimeData['max']));
-		const dataMin      = @json(array_map(fn($v) => round($v, 2), $cycleTimeData['min']));
-		const paretoLabels = @json($cycleTimeData['sensor']);
+		const dataAverage  = @json(array_map(fn($v) => round($v, 2), $cycleTimeData['average'] ?? []));
+		const dataMax      = @json(array_map(fn($v) => round($v, 2), $cycleTimeData['max'] ?? []));
+		const dataMin      = @json(array_map(fn($v) => round($v, 2), $cycleTimeData['min'] ?? []));
+		const paretoLabels = @json($cycleTimeData['sensor'] ?? []);
+		const maxY         = {{ $cycleTimeData['maxY'] ?? 100 }};
 
 		const bgColors = dataAverage.map(v =>
 			v > tactTime ? 'rgba(239,68,68,0.5)' : 'rgba(74,222,128,0.5)'
@@ -256,7 +322,7 @@
                         },
 						y: {
 							beginAtZero: true,
-							max: Math.max(...dataMax) + 5,
+							max: dataMax.length > 0 ? (Math.max(...dataMax) + 5) : maxY,
 							title: {
                                 display: true,
                                 text: 'Second',

@@ -5,9 +5,10 @@ use App\Http\Controllers\BestRecordController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\LinePerformanceController;
 use App\Http\Controllers\MarqueeTextController;
-use App\Http\Controllers\SettingController;
 use App\Http\Controllers\PatternHistoryController;
+use App\Http\Controllers\PatternController;
 use App\Http\Controllers\ProductController;
+use App\Http\Controllers\CycleTimeController;
 use App\Http\Controllers\SystemManagerController;
 
 use Illuminate\Support\Facades\Route;
@@ -23,13 +24,19 @@ Route::resource('dashboards', DashboardController::class);
 
 Route::get('/system-managers', [SystemManagerController::class, 'index'])->name('system-managers.index');
 
-// Route - Settings
-Route::get('/settings', [SettingController::class, 'index'])->name('settings.index');
-
 Route::middleware(['auth'])->group(function () {
     Route::get('/system-managers', [SystemManagerController::class, 'index'])->name('system-managers.index');
-    Route::get('/settings', [SettingController::class, 'index'])->name('settings.index');
+    
+    // Cycle Times - Monitoring
+    Route::get('/cycletimes/monitoring', [CycleTimeController::class, 'index'])->name('cycletimes.monitoring.index');
 
+    // Cycle Times Settings handled by PatternController
+    Route::resource('cycletimes/setting', PatternController::class)->names([
+        'index'   => 'cycletimes.setting.index',
+        'store'   => 'cycletimes.setting.store',
+        'update'  => 'cycletimes.setting.update',
+        'destroy' => 'cycletimes.setting.destroy',
+    ]);
 });
 
 Route::resource('products', ProductController::class);

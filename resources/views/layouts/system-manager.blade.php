@@ -14,6 +14,23 @@
     <main>
         @yield('content')
     </main>
+
+    @auth
+        <x-ui.modal id="profile-modal" maxWidth="max-w-md">
+            <x-ui.profile-card
+                :name="Auth::user()->name"
+                :email="Auth::user()->email ?? ''"
+                :verified="Auth::user()->email_verified_at !== null"
+                :npk="Auth::user()->npk"
+                :image="Auth::user()->image ? asset('storage/' . Auth::user()->image) : asset('assets/images/profile-blank.jpg')"
+            />
+        </x-ui.modal>
+    @endauth
+    <x-ui.modal id="login-modal" maxWidth="max-w-3xl">
+        <x-auth.login-form />
+    </x-ui.modal>
+
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindplus/elements@1" type="module"></script>
 </body>
 @if(session('success'))
     <script>

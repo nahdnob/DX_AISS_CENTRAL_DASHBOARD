@@ -20,10 +20,10 @@ class PatternHistoryController extends Controller
                 'pattern_id' => $request->pattern,
             ]);
 
-            return redirect()->route('dashboards.index', ['pattern' => $request->pattern])
+            return redirect()->back()
             ->with('success', 'Pattern has been successfully changed');
         }
 
-        return redirect()->route('dashboards.index', ['pattern' => $request->pattern]);
+        return redirect()->back();
     }
 }

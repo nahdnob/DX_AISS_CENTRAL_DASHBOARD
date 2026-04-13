@@ -1,103 +1,271 @@
 @extends('layouts.system-manager')
 
 @section('content')
-    <div class="p-4 sm:ml-64 mt-14">
-        <div class="grid grid-cols-3 gap-4 mb-4">
-            <div class="flex items-center justify-center h-24 rounded-base bg-gray-100 b">
-                <p class="text-fg-disabled">
-                    <svg class="w-5 h-5" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24"><path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 12h14m-7 7V5"/></svg>
-                </p>
+<div class="p-4 sm:ml-16 mt-14 transition-all duration-300">
+    <div class="p-4 min-h-[calc(100vh-5rem)]">
+        {{-- ===== HERO HEADER ===== --}}
+        <div class="relative bg-white rounded-2xl border border-gray-100 shadow-sm mb-6 overflow-hidden">
+            {{-- Decorative background --}}
+            <div class="absolute right-0 top-0 w-48 h-full bg-gradient-to-l from-red-50 to-transparent pointer-events-none"></div>
+            <div class="absolute right-8 top-1/2 -translate-y-1/2 w-24 h-24 rounded-full bg-red-100/40 pointer-events-none"></div>
+            <div class="relative flex items-center gap-5 px-6 py-5">
+                {{-- Icon --}}
+                <div class="shrink-0 w-14 h-14 rounded-xl bg-red-100 flex items-center justify-center">
+                    <svg class="w-7 h-7 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M9 10V6a3 3 0 013-3h0a3 3 0 013 3v4m3-2l.917 11.923A1 1 0 0117.92 21H6.08a1 1 0 01-.997-1.077L6 8h12z"/>
+                    </svg>
+                </div>
+                {{-- Title and Description --}}
+                <div>
+                    <h1 class="text-2xl font-bold text-gray-900 tracking-tight">Production</h1>
+                    <p class="mt-1 text-sm text-gray-500 max-w-lg leading-relaxed">
+                        Real-time monitoring of product flow on the
+                        <span class="font-semibold text-red-600">AISS production line</span>.
+                        Track part numbers, quantities, and timestamps across all input/output points.
+                    </p>
+                </div>
             </div>
-            <div class="flex items-center justify-center h-24 rounded-base bg-gray-100 b">
-                <p class="text-fg-disabled">
-                    <svg class="w-5 h-5" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24"><path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 12h14m-7 7V5"/></svg>
-                </p>
+            <div class="absolute left-0 top-0 w-1 h-full bg-gradient-to-b from-red-500 to-rose-700 rounded-l-2xl"></div>
+        </div>
+        {{-- ===== SUMMARY CARDS ===== --}}
+        <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-6">
+            {{-- Total Products --}}
+            <div class="relative bg-white rounded-2xl border border-gray-100 shadow-sm p-5 overflow-hidden group hover:shadow-md transition-shadow duration-200">
+                <div class="absolute -top-4 -right-4 w-16 h-16 rounded-full bg-sky-50 group-hover:bg-sky-100 transition-colors"></div>
+                <div class="relative flex items-center gap-4">
+                    {{-- Icon --}}
+                    <div class="w-10 h-10 rounded-xl bg-sky-100 flex items-center justify-center shrink-0">
+                        <svg class="w-5 h-5 text-sky-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"/>
+                        </svg>
+                    </div>
+                    {{-- Title and Description --}}
+                    <div>
+                        <p class="text-[10px] font-bold tracking-widest text-gray-400 uppercase">Total Part Number</p>
+                        <p class="text-2xl font-extrabold text-gray-900">{{ $products->total() }}</p>
+                    </div>
+                </div>
             </div>
-            <div class="flex items-center justify-center h-24 rounded-base bg-gray-100 b">
-                <p class="text-fg-disabled">
-                    <svg class="w-5 h-5" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24"><path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 12h14m-7 7V5"/></svg>
-                </p>
+            {{-- Total QTY In --}}
+            <div class="relative bg-white rounded-2xl border border-gray-100 shadow-sm p-5 overflow-hidden group hover:shadow-md transition-shadow duration-200">
+                <div class="absolute -top-4 -right-4 w-16 h-16 rounded-full bg-green-50 group-hover:bg-green-100 transition-colors"></div>
+                <div class="relative flex items-center gap-4">
+                    {{-- Icon --}}
+                    <div class="w-10 h-10 rounded-xl bg-green-100 flex items-center justify-center shrink-0">
+                        <svg class="w-5 h-5 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 16l4-4m0 0l4 4m-4-4v12M21 8l-4 4m0 0l-4-4m4 4V0"/>
+                        </svg>
+                    </div>
+                    {{-- Title and Description --}}
+                    <div>
+                        <p class="text-[10px] font-bold tracking-widest text-gray-400 uppercase">Total QTY In</p>
+                        <p class="text-2xl font-extrabold text-gray-900">{{ $products->sum('qty_in') ?? 0 }}</p>
+                    </div>
+                </div>
+            </div>
+            {{-- Total QTY Out --}}
+            <div class="relative bg-white rounded-2xl border border-gray-100 shadow-sm p-5 overflow-hidden group hover:shadow-md transition-shadow duration-200">
+                <div class="absolute -top-4 -right-4 w-16 h-16 rounded-full bg-red-50 group-hover:bg-red-100 transition-colors"></div>
+                <div class="relative flex items-center gap-4">
+                    {{-- Icon --}}
+                    <div class="w-10 h-10 rounded-xl bg-red-100 flex items-center justify-center shrink-0">
+                        <svg class="w-5 h-5 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 10l7-7m0 0l7 7m-7-7v18"/>
+                        </svg>
+                    </div>
+                    {{-- Title and Description --}}
+                    <div>
+                        <p class="text-[10px] font-bold tracking-widest text-gray-400 uppercase">Total QTY Out</p>
+                        <p class="text-2xl font-extrabold text-gray-900">{{ $products->sum('qty_out') ?? 0 }}</p>
+                    </div>
+                </div>
             </div>
         </div>
-        <div class="grid grid-cols-2 gap-4 mb-4">
-            <div class="flex items-center justify-center h-24 rounded-base bg-gray-100 b">
-                <p class="text-fg-disabled">
-                    <svg class="w-5 h-5" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24"><path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 12h14m-7 7V5"/></svg>
-                </p>
+        {{-- ===== DATA TABLE ===== --}}
+        <div>
+            <div class="flex items-end justify-between mb-3">
+                {{-- Title and Description --}}
+                <div class="ml-2">
+                    <p class="text-xs font-bold tracking-widest text-red-600 uppercase">Production Data</p>
+                    <h2 class="text-xl font-bold text-gray-900">Part Tracking</h2>
+                </div>
+                <div class="flex items-center gap-2">
+                    {{-- Button Filter --}}
+                    <button class="w-8 h-8 flex items-center justify-center rounded-lg border border-gray-200 hover:bg-gray-50 text-gray-500 transition">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 4h18M7 10h10M11 16h2"/>
+                        </svg>
+                    </button>
+                    {{-- Button Export --}}
+                    <button class="w-8 h-8 flex items-center justify-center rounded-lg border border-gray-200 hover:bg-gray-50 text-gray-500 transition">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v2a2 2 0 002 2h12a2 2 0 002-2v-2M7 10l5 5m0 0l5-5m-5 5V4"/>
+                        </svg>
+                    </button>
+                </div>
             </div>
-            <div class="flex items-center justify-center h-24 rounded-base bg-gray-100 b">
-                <p class="text-fg-disabled">
-                    <svg class="w-5 h-5" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24"><path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 12h14m-7 7V5"/></svg>
-                </p>
-            </div>
-        </div>
-        <div class="p-4 min-h-[calc(100vh-8rem)] rounded-base">
-            <div class="relative overflow-x-auto white shadow-sm rounded border border-default">
-                <div class="p-2">
-                    <form>   
-                        <label for="search" class="block mb-2.5 text-sm font-medium text-heading sr-only ">Search</label>
-                        <div class="relative w-full max-w-md">
-                            <div class="absolute inset-y-0 start-0 flex items-center ps-3 pointer-events-none">
-                                <svg class="w-4 h-4 text-body" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24"><path stroke="currentColor" stroke-linecap="round" stroke-width="2" d="m21 21-3.5-3.5M17 10a7 7 0 1 1-14 0 7 7 0 0 1 14 0Z"/></svg>
+            <div class="bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden">
+                {{-- Search bar --}}
+                <div class="p-4 border-b border-gray-100">
+                    <form id="product-search-form" method="GET" action="{{ route('products.index') }}" class="flex items-center gap-2">
+                        {{-- Search Input --}}
+                        <div class="relative flex-1 max-w-sm">
+                            <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                                <svg class="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="m21 21-3.5-3.5M17 10a7 7 0 11-14 0 7 7 0 0114 0z"/>
+                                </svg>
                             </div>
-                            <input type="search" id="search" class="block w-full p-3 ps-9 bg-white border border-default text-heading text-sm rounded-xl focus:ring-brand focus:border-brand shadow-xs placeholder:text-body" placeholder="Search" required />
-                            <button type="button" class="absolute end-1.5 bottom-1.5 text-white bg-blue-500 hover:bg-blue-700 box-border border border-transparent focus:ring-4 focus:ring-brand-medium shadow-xs font-medium leading-5 rounded-xl text-xs px-3 py-1.5 focus:outline-none">Search</button>
+                            <input type="search" id="search" name="search"
+                                   value="{{ request('search') }}"
+                                   placeholder="Search part number..."
+                                   class="block w-full pl-9 pr-4 py-2.5 text-sm text-gray-700 bg-gray-50 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-red-400 focus:border-transparent transition"/>
                         </div>
+                        {{-- Button Search --}}
+                        <button type="submit"
+                                class="px-4 py-2.5 text-sm font-bold text-white bg-gradient-to-r from-red-600 to-rose-700 rounded-xl hover:brightness-110 shadow-sm shadow-red-200 transition">
+                            Search
+                        </button>
+                        {{-- Button Reset --}}
+                        @if(request('search'))
+                            <a href="{{ route('products.index') }}" class="px-4 py-2.5 text-sm font-bold text-gray-600 bg-gray-100 rounded-xl hover:bg-gray-200 transition">
+                                Reset
+                            </a>
+                        @endif
                     </form>
                 </div>
-                <table class="w-full text-sm text-left rtl:text-right text-body">
-                    <thead class="text-sm text-body text-white bg-gray-700 border-b border-default-medium">
-                        <tr>
-                            <th scope="col" class="px-6 py-3 font-medium">
-                                Part Number
-                            </th>
-                            <th scope="col" class="px-6 py-3 font-medium">
-                                Time In
-                            </th>
-                            <th scope="col" class="px-6 py-3 font-medium">
-                                QTY In
-                            </th>
-                            <th scope="col" class="px-6 py-3 font-medium">
-                                Time Out
-                            </th>
-                            <th scope="col" class="px-6 py-3 font-medium">
-                                QTY Out
-                            </th>
+                {{-- Table --}}
+                <table class="w-full text-sm text-left">
+                    {{-- Table Header --}}
+                    <thead>
+                        <tr class="border-b border-gray-100">
+                            <th class="px-5 py-3 text-[10px] font-bold tracking-widest text-gray-400 uppercase">Part Number</th>
+                            <th class="px-5 py-3 text-[10px] font-bold tracking-widest text-gray-400 uppercase">Time In</th>
+                            <th class="px-5 py-3 text-[10px] font-bold tracking-widest text-gray-400 uppercase">QTY In</th>
+                            <th class="px-5 py-3 text-[10px] font-bold tracking-widest text-gray-400 uppercase">Time Out</th>
+                            <th class="px-5 py-3 text-[10px] font-bold tracking-widest text-gray-400 uppercase">QTY Out</th>
+                            <th class="px-5 py-3 text-[10px] font-bold tracking-widest text-gray-400 uppercase text-right">Flow</th>
                         </tr>
                     </thead>
-                    <tbody>
-                        @foreach ($products as $item)
-                            <tr class="bg-neutral-primary-soft border-b border-default hover:bg-neutral-secondary-medium">
-                                <th scope="row" class="px-6 py-4 font-medium text-heading whitespace-nowrap">
-                                    {{ $item->part_number }}
-                                </th>
-                                <td class="px-6 py-4">
-                                    {{ $item->firstProductIn['time_in'] 
-                                        ? \Carbon\Carbon::parse($item->firstProductIn['time_in'])->format('Y-m-d H:i') 
-                                        : '-' 
-                                    }}
+                    {{-- Table Body --}}
+                    <tbody class="divide-y divide-gray-50">
+                        @forelse ($products as $item)
+                            @php
+                                $timeIn  = $item->firstProductIn['time_in'] ?? null;
+                                $timeOut = $item->lastProductIn->productOut->time_out ?? null;
+                                $qtyIn   = $item->qty_in ?? 0;
+                                $qtyOut  = $item->qty_out ?? 0;
+                                $flowPct = $qtyIn > 0 ? round(($qtyOut / $qtyIn) * 100, 1) : 0;
+                            @endphp
+                            <tr class="hover:bg-red-50/40 transition-colors duration-150 group">
+                                {{-- Part Number --}}
+                                <td class="px-5 py-4 whitespace-nowrap">
+                                    <div class="flex items-center gap-2.5">
+                                        <div class="w-8 h-8 rounded-lg bg-gray-100 flex items-center justify-center shrink-0">
+                                            <svg class="w-4 h-4 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"/>
+                                            </svg>
+                                        </div>
+                                        <span class="font-semibold text-gray-800 text-sm">{{ $item->part_number }}</span>
+                                    </div>
                                 </td>
-                                <td class="px-6 py-4">
-                                    {{ $item->qty_in ?? '-' }}
+                                {{-- Time In --}}
+                                <td class="px-5 py-4 text-gray-600 text-sm">
+                                    @if($timeIn)
+                                        <div class="flex items-center gap-1.5">
+                                            <span class="w-1.5 h-1.5 rounded-full bg-green-400"></span>
+                                            {{ \Carbon\Carbon::parse($timeIn)->format('Y-m-d H:i') }}
+                                        </div>
+                                    @else
+                                        <span class="text-gray-300">—</span>
+                                    @endif
                                 </td>
-                                <td class="px-6 py-4">
-                                    {{ $item->lastProductIn->productOut?->time_out
-                                        ? \Carbon\Carbon::parse($item->lastProductIn->productOut->time_out)->format('Y-m-d H:i')
-                                        : '-'
-                                    }}
+                                {{-- QTY In --}}
+                                <td class="px-5 py-4">
+                                    <span class="inline-flex items-center px-2 py-0.5 rounded-md text-xs font-bold bg-green-100 text-green-700">
+                                        {{ $qtyIn ?: '—' }}
+                                    </span>
                                 </td>
-                                <td class="px-6 py-4">
-                                    {{ $item->qty_out ?? '-' }}
+                                {{-- Time Out --}}
+                                <td class="px-5 py-4 text-gray-600 text-sm">
+                                    @if($timeOut)
+                                        <div class="flex items-center gap-1.5">
+                                            <span class="w-1.5 h-1.5 rounded-full bg-red-400"></span>
+                                            {{ \Carbon\Carbon::parse($timeOut)->format('Y-m-d H:i') }}
+                                        </div>
+                                    @else
+                                        <span class="text-gray-300">—</span>
+                                    @endif
+                                </td>
+                                {{-- QTY Out --}}
+                                <td class="px-5 py-4">
+                                    <span class="inline-flex items-center px-2 py-0.5 rounded-md text-xs font-bold bg-sky-100 text-sky-700">
+                                        {{ $qtyOut ?: '—' }}
+                                    </span>
+                                </td>
+                                {{-- Flow donut --}}
+                                <td class="px-5 py-4">
+                                    <div class="flex items-center justify-end gap-2">
+                                        <div class="relative w-8 h-8 shrink-0">
+                                            {{-- Donut ring --}}
+                                            <div class="w-8 h-8 rounded-full"
+                                                 style="background: conic-gradient(
+                                                    {{ $flowPct >= 100 ? '#22c55e' : '#3b82f6' }} 0deg,
+                                                    {{ $flowPct >= 100 ? '#22c55e' : '#3b82f6' }} {{ min($flowPct, 100) * 3.6 }}deg,
+                                                    #f3f4f6 {{ min($flowPct, 100) * 3.6 }}deg,
+                                                    #f3f4f6 360deg
+                                                 );">
+                                                {{-- Donut hole (Inner white circle) --}}
+                                                <div class="absolute inset-[2.5px] rounded-full bg-white"></div>
+                                            </div>
+                                        </div>
+                                        {{-- Flow Percentage --}}
+                                        <span class="text-[11px] font-bold {{ $flowPct >= 100 ? 'text-green-600' : 'text-sky-600' }}">{{ $flowPct }}%</span>
+                                    </div>
                                 </td>
                             </tr>
-                        @endforeach
+                        @empty
+                            {{-- Empty State --}}
+                            <tr>
+                                <td colspan="6" class="px-5 py-12 text-center text-gray-400">
+                                    <div class="flex flex-col items-center gap-2">
+                                        <svg class="w-10 h-10 text-gray-200" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"/>
+                                        </svg>
+                                        <span class="text-sm">Belum ada data produksi.</span>
+                                    </div>
+                                </td>
+                            </tr>
+                        @endforelse
                     </tbody>
                 </table>
-                <div class="flex items-center justify-center m-2">
-                    <x-ui.pagination :paginator="$products" />
+                {{-- Footer Pagination --}}
+                <div class="flex items-center justify-between px-5 py-3 border-t border-gray-100">
+                    <p class="text-xs text-red-500 font-medium">
+                        Showing {{ $products->firstItem() ?? 0 }}–{{ $products->lastItem() ?? 0 }} of {{ $products->total() }} parts
+                    </p>
+                    <div class="flex items-center gap-2">
+                        @if ($products->onFirstPage())
+                            <span class="px-4 py-1.5 text-xs font-semibold text-gray-300 border border-gray-200 rounded-lg cursor-not-allowed">Previous</span>
+                        @else
+                            <a href="{{ $products->previousPageUrl() }}"
+                               class="px-4 py-1.5 text-xs font-semibold text-gray-600 border border-gray-200 rounded-lg hover:bg-gray-50 transition">
+                                Previous
+                            </a>
+                        @endif
+                        @if ($products->hasMorePages())
+                            <a href="{{ $products->nextPageUrl() }}"
+                               class="px-4 py-1.5 text-xs font-bold text-white bg-gradient-to-r from-red-600 to-rose-700 rounded-lg hover:brightness-110 shadow-sm shadow-red-200 transition">
+                                Next
+                            </a>
+                        @else
+                            <span class="px-4 py-1.5 text-xs font-bold text-white bg-red-300 rounded-lg cursor-not-allowed">Next</span>
+                        @endif
+                    </div>
                 </div>
             </div>
         </div>
-        <x-ui.footer />
     </div>
+    <x-ui.footer />
+</div>
 @endsection

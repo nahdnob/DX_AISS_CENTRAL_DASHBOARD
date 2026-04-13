@@ -10,7 +10,7 @@ use Illuminate\Http\RedirectResponse;
 
 class BestRecordController extends Controller
 {
-    public static function index() {
+    public function index() {
                                         
         $ncds = Ncd::orderBy('date', 'desc')
                     ->paginate(6);
@@ -36,7 +36,7 @@ class BestRecordController extends Controller
     }
 
     public function store(Request $request):RedirectResponse{
-dd($request->all());    
+        
 		//validate form
 		$request->validate([
 			'date'   => 'required|date',

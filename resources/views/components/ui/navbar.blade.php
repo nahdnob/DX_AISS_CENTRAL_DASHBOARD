@@ -1,4 +1,4 @@
-<nav class="relative z-50 bg-gradient-to-r from-sky-200 to-red-700" x-data="{ isOpen: false }">
+<nav class="relative z-50 bg-gradient-to-r from-sky-200 from-20% via-red-600 via-60% to-rose-900" x-data="{ isOpen: false }">
 	<div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
 		<div class="flex h-16 items-center justify-between">
 			<div class="flex items-center">
@@ -14,14 +14,6 @@
 			</div>
 			<div class="hidden md:block">
 				<div class="flex flex-row">
-					@auth
-						{{-- CT View Toggle --}}
-						<label class="inline-flex items-center me-5 cursor-pointer">
-							<input type="checkbox" id="ct-view-toggle" value="" class="sr-only peer">
-							<div class="relative w-11 h-6 bg-neutral-500 rounded-full peer dark:bg-gray-700 peer-focus:ring-4 peer-focus:ring-green-300 dark:peer-focus:ring-green-800 peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-0.5 after:start-[2px] after:bg-white after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-green-500 dark:peer-checked:bg-green-600"></div>
-							<span class="select-none ms-3 text-white text-xl font-semibold italic text-heading uppercase">CT View</span>
-						</label>
-					@endauth
 					<div class="ml-4 flex items-center md:ml-6">
 						<!-- Clock -->
 						<div class="text-right text-white px-4 flex flex-col">
@@ -29,9 +21,9 @@
 							<p id="current-date" class="text-base font-mono tracking-wide">dd/mm/yyyy</p>
 						</div>
 						<!-- Profile dropdown -->
-						<div class="relative ml-3" x-data="{ open: false, showLogin: false }">
+						<div class="relative ml-3" x-data="{ isOpen: false }">
 							<div>
-								<button type="button" @click="isOpen = !isOpen" class="relative flex max-w-xs items-center rounded-full bg-red-700 text-sm focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-gray-800" id="user-menu-button" aria-expanded="false" aria-haspopup="true">
+								<button type="button" @click="isOpen = !isOpen" @click.away="isOpen = false" class="relative flex max-w-xs items-center rounded-full bg-red-700 text-sm focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-gray-800" id="user-menu-button" aria-expanded="false" aria-haspopup="true">
 									<span class="absolute -inset-1.5"></span>
 									<span class="sr-only">Open user menu</span>
 									@auth
@@ -58,45 +50,25 @@
 								x-transition:leave-end="opacity-0 scale-95"
 								class="absolute right-0 z-10 mt-2 w-48 origin-top-right rounded-md bg-white py-1 shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none" role="menu" aria-orientation="vertical" aria-labelledby="user-menu-button" tabindex="-1">
 								
-								<!-- Active: "bg-gray-100", Not Active: "" -->
-								<a
-									href="javascript:void(0)"
-									data-modal-open="profile-modal"
-									class="block px-4 py-2 text-sm text-gray-700"
-									role="menuitem"
-									tabindex="-1"
-									id="user-menu-item-0"
-								>
-									Your Profile
-								</a>
-								<a href="{{ route('system-managers.index') }}" class="block px-4 py-2 text-sm text-gray-700" role="menuitem" tabindex="-1" id="user-menu-item-1">Settings</a>
 								@auth
-									<hr>
-									<div class="px-4 py-2 text-sm text-gray-700">
+									<a href="javascript:void(0)" data-modal-open="profile-modal" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100" role="menuitem" tabindex="-1">Your Profile</a>
+									<a href="{{ route('system-managers.index') }}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100" role="menuitem" tabindex="-1">Settings</a>
+									<div class="px-4 py-2 text-sm text-gray-700 border-t border-gray-200 mt-1 pt-2">
 										{{ Auth::user()->name }}
 									</div>
 									<div class="px-4 py-2 text-xs text-gray-500">
-										NPK: {{ Auth::user()->npk }}
+										NPK: {{ Auth::user()->npk ?? '-' }}
 									</div>
 									<form method="POST" action="{{ route('logout') }}">
 										@csrf
-										<button type="submit"
-											class="w-full text-left block px-4 py-2 text-sm text-red-600 hover:bg-gray-100"
-										>
+										<button type="submit" class="w-full text-left block px-4 py-2 text-sm text-red-600 hover:bg-gray-100">
 											Sign Out
 										</button>
 									</form>
 								@else
-									<a
-										href="javascript:void(0)"
-										data-modal-open="login-modal"
-										class="block px-4 py-2 text-sm text-gray-700"
-										role="menuitem"
-										tabindex="-1"
-										id="user-menu-item-2"
-									>
-										Sign in
-									</a>
+									<a href="javascript:void(0)" onclick="Toast.show('Peringatan: Anda perlu Sign In terlebih dahulu!', 'error')" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100" role="menuitem" tabindex="-1">Your Profile</a>
+									<a href="javascript:void(0)" onclick="Toast.show('Peringatan: Anda perlu Sign In terlebih dahulu!', 'error')" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100" role="menuitem" tabindex="-1">Settings</a>
+									<a href="javascript:void(0)" data-modal-open="login-modal" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 border-t border-gray-100 mt-1 pt-2" role="menuitem" tabindex="-1">Sign in</a>
 								@endauth
 							</div>
 						</div>

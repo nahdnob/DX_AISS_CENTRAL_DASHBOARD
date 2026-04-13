@@ -1,4 +1,4 @@
-<nav class="fixed top-0 z-50 w-full bg-gradient-to-r from-sky-200 to-red-700 border-b border-default">
+<nav class="fixed top-0 z-50 w-full bg-gradient-to-r from-sky-200 from-20% via-red-600 via-60% to-rose-900 border-b border-default">
     <div class="px-3 py-3 lg:px-5 lg:pl-3">
         <div class="flex items-center justify-between">
             <div class="flex items-center justify-start rtl:justify-end">
@@ -13,14 +13,61 @@
                 </div>
             </div>
             <div class="flex items-center">
-                <div class="flex items-center ms-3">
+                <div class="relative flex items-center ms-3" x-data="{ openProfile: false }">
                     <div>
-                        <button type="button" class="flex text-sm bg-gray-800 rounded-full focus:ring-4 focus:ring-gray-300 dark:focus:ring-gray-600" aria-expanded="false" data-dropdown-toggle="dropdown-user">
+                        <button type="button" @click="openProfile = !openProfile" @click.away="openProfile = false" class="flex text-sm bg-gray-800 rounded-full focus:ring-4 focus:ring-gray-300 dark:focus:ring-gray-600" aria-expanded="false">
                             <span class="sr-only">Open user menu</span>
-                            <img class="w-8 h-8 rounded-full" src="https://flowbite.com/docs/images/people/profile-picture-5.jpg" alt="user photo">
+                            @auth
+                                <img class="w-8 h-8 rounded-full object-cover"
+                                    src="{{ Auth::user()->image 
+                                        ? asset('storage/' . Auth::user()->image) 
+                                        : asset('assets/images/profile-blank.jpg')
+                                    }}"
+                                    alt="{{ Auth::user()->name }}"
+                                >
+                            @else
+                                <img class="w-8 h-8 rounded-full object-cover"
+                                    src="{{asset('assets/images/profile-blank.jpg')}}"
+                                    alt="Guest">
+                            @endauth
                         </button>
                     </div>
-                    <x-ui.dropdown />
+                    
+                    <div x-show="openProfile"
+                        x-transition:enter="transition ease-out duration-100 transform"
+                        x-transition:enter-start="opacity-0 scale-95"
+                        x-transition:enter-end="opacity-100 scale-100"
+                        x-transition:leave="transition ease-in duration-75 transform"
+                        x-transition:leave-start="opacity-100 scale-100"
+                        x-transition:leave-end="opacity-0 scale-95"
+                        class="absolute right-0 top-10 mt-2 z-50 w-48 bg-white border border-gray-200 rounded-md shadow-lg focus:outline-none" style="display: none;">
+                        
+                        @auth
+                            <a href="javascript:void(0)" data-modal-open="profile-modal"
+                                class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100" role="menuitem">Your Profile</a>
+                            <a href="{{ route('system-managers.index') }}"
+                                class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100" role="menuitem">Settings</a>
+                            <div class="px-4 py-2 text-sm text-gray-700 border-t border-gray-200 mt-1 pt-2">
+                                {{ Auth::user()->name }}
+                            </div>
+                            <div class="px-4 py-2 text-xs text-gray-500">
+                                NPK: {{ Auth::user()->npk ?? '-' }}
+                            </div>
+                            <form method="POST" action="{{ route('logout') }}">
+                                @csrf
+                                <button type="submit" class="w-full text-left block px-4 py-2 text-sm text-red-600 hover:bg-gray-100">
+                                    Sign Out
+                                </button>
+                            </form>
+                        @else
+                            <a href="javascript:void(0)" onclick="Toast.show('Peringatan: Anda perlu Sign In terlebih dahulu!', 'error')"
+                                class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100" role="menuitem">Your Profile</a>
+                            <a href="javascript:void(0)" onclick="Toast.show('Peringatan: Anda perlu Sign In terlebih dahulu!', 'error')"
+                                class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100" role="menuitem">Settings</a>
+                            <a href="javascript:void(0)" data-modal-open="login-modal"
+                                class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 border-t border-gray-100 mt-1 pt-2 font-semibold" role="menuitem">Sign in</a>
+                        @endauth
+                    </div>
                 </div>
             </div>
         </div>
